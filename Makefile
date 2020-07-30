@@ -5,17 +5,20 @@
 # 	@echo "y=>$(y)"
 # 	@echo "x=>$(x)"
 
-echo/foo.o: src/hello.c
-	@#echo/foo.o
-	@echo $@
+# echo/foo.o: src/hello.c
+# 	@#echo/foo.o
+# 	@echo $@
 
-	@#echo
-	@echo $(@D)
+# 	@#echo
+# 	@echo $(@D)
 
-	@#foo.os
-	@echo $(@F)
+# 	@#foo.os
+# 	@echo $(@F)
 
-	@echo $(<F)
-	@echo $(<D)
+# 	@echo $(<F)
+# 	@echo $(<D)
+
+clear: 
+	rm -rf ./**/a.out
 
 
