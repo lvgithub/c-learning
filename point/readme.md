@@ -66,16 +66,50 @@ int main()
 
 
 
-**总结**
-
-* 内存中每个字节都有一个地址，整个内存是有序排列的，地址从0依次增加。所以指针有了类型，`char*`、`int*`,编译器就可以知道按照一个字节还是4个字节来解析内存的数据
-
-
-
 **精髓**
 
 * 通过指针能实现所谓的“传引用”而不是“传值”，本质上节约了数据传输性能
 * 指针的运算（对指针加减，甚至取指针）才是c类语言强大的地方
+
+**函数指针**
+
+* 函数指针是指向函数的指针变量，我们可以把函数指针作为参数，作为另外一个函数的回调函数使用，这在异步编程中有着非常重要的意义
+
+```c
+#include <stdlib.h>
+#include <stdio.h>
+
+void fillArray(int *array, size_t arraySize, int (*getNextValue)(void))
+{
+    for (size_t i = 0; i < arraySize; i++)
+        array[i] = getNextValue();
+}
+
+int genRandomValue(void)
+{
+    return rand() % 10;
+}
+
+int main(void)
+{
+    int arr[10];
+
+    // 定义一个函数指针
+    int (*pfun)(void) = NULL;
+    pfun = genRandomValue;
+
+    // 函数指针作为回调函数
+    fillArray(arr, 10, pfun);
+
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+    return 0;
+}
+```
 
 
 
