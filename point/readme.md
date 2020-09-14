@@ -74,6 +74,7 @@ int main()
 **函数指针**
 
 * 函数指针是指向函数的指针变量，我们可以把函数指针作为参数，作为另外一个函数的回调函数使用，这在异步编程中有着非常重要的意义
+* 比如`qsort(void base, size_t nitems, size_t size, int (compar)(const void *, const void*))`compar 作为回调函数，来比较数组。
 
 ```c
 #include <stdlib.h>
@@ -89,6 +90,19 @@ int genRandomValue(void)
 {
     return rand() % 10;
 }
+int compare(const void *a, const void *b)
+{
+    return (*(int *)a - *(int *)b);
+}
+
+void printArr(int arr[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
 
 int main(void)
 {
@@ -100,13 +114,11 @@ int main(void)
 
     // 函数指针作为回调函数
     fillArray(arr, 10, pfun);
+    printArr(arr, sizeof(arr) / sizeof(arr[0]));
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-
-    printf("\n");
+    // 对数组进行排序
+    qsort(arr, 10, sizeof(int), compare);
+    printArr(arr, sizeof(arr) / sizeof(arr[0]));
     return 0;
 }
 ```

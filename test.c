@@ -11,6 +11,19 @@ int genRandomValue(void)
 {
     return rand() % 10;
 }
+int compare(const void *a, const void *b)
+{
+    return (*(int *)a - *(int *)b);
+}
+
+void printArr(int arr[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
 
 int main(void)
 {
@@ -22,12 +35,10 @@ int main(void)
 
     // 函数指针作为回调函数
     fillArray(arr, 10, pfun);
+    printArr(arr, sizeof(arr) / sizeof(arr[0]));
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-
-    printf("\n");
+    // 对数组进行排序
+    qsort(arr, 10, sizeof(int), compare);
+    printArr(arr, sizeof(arr) / sizeof(arr[0]));
     return 0;
 }
