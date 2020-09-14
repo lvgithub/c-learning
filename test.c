@@ -1,14 +1,10 @@
 #include <stdio.h>
-#include <string.h>
 
 int main()
 {
-    int a = 100;
+    int a = 1;
     int *p = &a;
 
-    char b = 'c';
-    char *c = &b;
-
-    printf("%d \n", *p);
-    printf("%c \n", *c);
+    printf("%p \n", p);       //0x7ffee38075c8
+    printf("%p \n", (p + 1)); //0x7ffee38075cc
 }
