@@ -1,3 +1,5 @@
 .vscode
 **/*.out
 *.out
+*.out*
+**/**test.c

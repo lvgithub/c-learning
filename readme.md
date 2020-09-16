@@ -23,4 +23,6 @@ gcc是GCC中的GUN C Compiler（C 编译器）,我们将使用它来编译我们
 
 ## Links
 [指针才是C的精髓](http://yuanfentiank789.github.io/2018/10/27/C%E8%AF%AD%E8%A8%80%E9%AB%98%E7%BA%A7%E4%B8%93%E9%A2%98-%E6%8C%87%E9%92%88%E6%89%8D%E6%98%AFC%E7%9A%84%E7%B2%BE%E9%AB%93/)
+
+[size命令](https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/size.html)
 -------------------------------------------------------------------------------------
