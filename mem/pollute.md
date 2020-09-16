@@ -33,7 +33,7 @@ int main(void)
 
 **验证**
 
-我们通过gdb调试，打印出各个变量的地址
+我们通过gdb调试，打印出各个变量的地址[gdb使用介绍](https://github.com/lvgithub/c-learning/blob/master/gdb/memory.md)
 
 ```shell
 $ gdb a.out 
@@ -95,4 +95,11 @@ Thread 2 hit Breakpoint 2, main () at test.c:11
 ptr赋值245后，内存中值为 `00000000    00000001    00000000    00000000`
 
 直接污染了 `a` 的内存,把 `a` 值修改为了 `00000001` 因为ptr为 `int*` 类型，占用4个字节，`a`的地址比 `ptr` 高1，属于4个字节之内，所以被污染了。 
+
+[原文发布于我的GitHub](https://github.com/lvgithub/c-learning/blob/master/mem/pollute.md)
+
+**链接**
+
+* [gdb查看内存](https://github.com/lvgithub/c-learning/blob/master/gdb/memory.md)
+* [mac 安装gdb](https://github.com/lvgithub/c-learning/blob/master/gdb/install.md)
 
