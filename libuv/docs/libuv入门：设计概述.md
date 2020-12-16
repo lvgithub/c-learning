@@ -62,19 +62,46 @@ I/O 事件循环是`libuv`的核心，事件循环建立起异步I/O操作的核
 
 4. `Run pending callbacks`  执行被挂起的回调函数，调用回调被推迟到下一个循环迭代。例如：如果 TCP 套接字在尝试连接时接收到 `ECONNREFUSED`，这将被排队以在这个阶段执行。
 
-5. `Run idle handles`     每个循环迭代中都会运行一次,该阶段可以用来执行一些优先级较低的活动，比如发送性能日志等。如果改阶段有需要执行的回调函数，`Poll for I/O`阶段将不会阻塞，比如使用事件循环下载文件，如果`Poll for I/O`阶段阻塞，将会造成下载终端。但是如果通过改阶段来下载文件，可以保证`Poll for I/O`接口不阻塞。
+5. `Run idle handles`    每个循环迭代中都会运行一次,该阶段可以用来执行一些优先级较低的活动，比如发送性能日志等。如果改阶段有需要执行的回调函数，`Poll for I/O`阶段将不会阻塞，比如使用事件循环下载文件，如果`Poll for I/O`阶段阻塞，将会造成下载终端。但是如果通过改阶段来下载文件，可以保证`Poll for I/O`接口不阻塞。
 
-6. `Run prepare handles`  会在 `poll for I/O.`  阶段之前执行，如果你想在I/O之前执行某个参数，就可以在该阶段去执行
+6. `Prepare handles`  会在 `Poll for I/O`  阶段之前执行，如果你想在I/O之前执行某个参数，就可以在该阶段去执行
 
-7. 
+7. `Poll for I/O`  该阶段执行异步的I/O操作， 进入该阶段前，会先计算轮训超时（阻塞I/O多久）：
 
+    * 如果使用UV_RUN_NOWAIT标志运行循环，则超时为0
+    * 如果执行了 `uv_stop()`，则超时为0
+    * 如果没有活动的`handles`或`request`，则超时为0
+    * 如果有`idle handles` 处于活动状态，则超时为0
+    * 如果有`pending handles` 处于活动状态，则超时为0
+    * 如果以上情况都不匹配，则取最近计时器的超时时间差，如果没有活动计时器，则取无穷大
 
+       [详细见源码](https://github.com/libuv/libuv/blob/9c6cec803aad3564376cc598d6f7dafdcc26c0f9/src/unix/core.c#L333)
 
+    ```c
+    
+    int uv_backend_timeout(const uv_loop_t* loop) {
+      if (loop->stop_flag != 0)
+        return 0;
+    
+      if (!uv__has_active_handles(loop) && !uv__has_active_reqs(loop))
+        return 0;
+    
+      if (!QUEUE_EMPTY(&loop->idle_handles))
+        return 0;
+    
+      if (!QUEUE_EMPTY(&loop->pending_queue))
+        return 0;
+    
+      if (loop->closing_handles)
+        return 0;
+    
+      return uv__next_timeout(loop);
+    }
+    ```
 
-
-
-
-
+* 如果上一步计算的`timeout`不为0，事件循环将会阻塞该阶段，所有I/O相关的`handle`将会被监控，直到I/O相关事件被触发然后执行回调函数，或者`timeout`过期
+* `Check handle `  在I/O阶段之后执行，本质上和`Prepare handles`是对应的
+* `Call close callbacks` 如果通过调用`uv_close`函数关闭了`handle`，该阶段会去关闭`handel`上的I/O
 
 
 
